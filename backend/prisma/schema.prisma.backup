@@ -1,0 +1,273 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  SELLER
+  BUYER
+}
+
+enum ProductStatus {
+  ACTIVE
+  INACTIVE
+  DRAFT // For product not launched yet
+  ARCHIVED // For product discontinued can be for deleted product to(I THINK)
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PROCESSING
+  SHIPPED
+  COMPLETED
+  CANCELLED
+}
+
+enum PaymentMethod {
+  BANK_TRANSFER
+  E_WALLET
+  COD
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+  REFUNDED
+}
+
+enum ShippingService {
+  REGULAR
+  EXPRESS
+}
+
+model Users {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  passwordHash String
+  fullName     String
+  phone        String?
+  avatar_url   String?
+  role         UserRole @default(BUYER)
+  created_at   DateTime @default(now())
+  updated_at   DateTime @updatedAt
+
+  user_address   User_addresses[]
+  user_stores    Stores[]
+  cart           Carts?
+  wishlists      Wishlists[]
+  orders         Orders[]
+  productReviews Product_reviews[]
+}
+
+model User_addresses {
+  id             String   @id @default(uuid())
+  user_id        String
+  userId         String
+  recipient_name String
+  phone          String
+  street_addres  String
+  city           String
+  postal_code    String
+  province       String
+  is_default     Boolean  @default(false)
+  created_at     DateTime @default(now())
+
+  user Users @relation(fields: [userId], references: [id])
+}
+
+model Categories {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String
+  icon        String?
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Stores {
+  id                  String   @id @default(uuid())
+  user_id             String
+  name                String
+  slug                String
+  description         String
+  logo_url            String?
+  bank_name           String?
+  bank_account_number String?
+  bank_account_holder String?
+  rating              String
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+
+  user   Users    @relation(fields: [user_id], references: [id])
+  orders Orders[]
+}
+
+model Products {
+  id                  String        @id @default(uuid())
+  store_id            String
+  category_id         String
+  name                String
+  slug                String
+  description         String?
+  price               String
+  stock               Int
+  sku                 String?       @unique
+  low_stock_threshold Int
+  rating              Decimal       @default(0.0)
+  total_reviews       Int
+  status              ProductStatus @default(ACTIVE)
+  created_at          DateTime      @default(now())
+  updated_at          DateTime      @updatedAt
+
+  product_images    Product_images[]
+  product_cart_item Cart_items[]
+  wishlists         Wishlists[]
+  order_items       Order_items[]
+  productReviews    Product_reviews[]
+}
+
+model Product_images {
+  id         String   @id @default(uuid())
+  product_id String
+  image_url  String
+  is_primary Boolean
+  sort_order Int
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  product Products @relation(fields: [product_id], references: [id])
+}
+
+model Carts {
+  id         String   @id @default(uuid())
+  user_id    String   @unique
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  user Users        @relation(fields: [user_id], references: [id])
+  cart Cart_items[]
+}
+
+model Cart_items {
+  id         String   @id @default(uuid())
+  cart_id    String
+  product_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  cart    Carts    @relation(fields: [cart_id], references: [id])
+  Product Products @relation(fields: [product_id], references: [id])
+}
+
+model Wishlists {
+  id         String   @id @default(uuid())
+  user_id    String
+  product_id String
+  created_at DateTime @default(now())
+
+  user    Users    @relation(fields: [user_id], references: [id])
+  product Products @relation(fields: [product_id], references: [id])
+
+  @@unique([user_id, product_id])
+}
+
+model Orders {
+  id                        String      @id @default(uuid())
+  order_number              String
+  user_id                   String
+  store_id                  String
+  subtotal                  Int
+  shipping_fee              Int
+  discount_amount           String
+  total_amount              Int
+  order_status              OrderStatus @default(PENDING_PAYMENT)
+  shipping_address_snapshot Json
+  created_at                DateTime    @default(now())
+  updated_at                DateTime    @updatedAt
+
+  order_items    Order_items[]
+  user           Users             @relation(fields: [user_id], references: [id])
+  store          Stores            @relation(fields: [store_id], references: [id])
+  payment        Payments?
+  shipment       Order_shipments?
+  productReviews Product_reviews[]
+}
+
+model Order_items {
+  id            String   @id @default(uuid())
+  order_id      String
+  product_id    String
+  product_name  String
+  product_image String
+  price         Int
+  quantity      Int
+  subtotal      Int
+  created_at    DateTime @default(now())
+  updated_at    DateTime @updatedAt
+
+  order   Orders   @relation(fields: [order_id], references: [id], onDelete: Cascade)
+  product Products @relation(fields: [product_id], references: [id], onDelete: Cascade)
+}
+
+model Payments {
+  id             String        @id @default(uuid())
+  order_id       String        @unique
+  payment_method PaymentMethod
+  payment_status PaymentStatus @default(PENDING)
+  amount         Int
+  paid_at        DateTime?
+  created_at     DateTime      @default(now())
+
+  order Orders @relation(fields: [order_id], references: [id])
+}
+
+model Order_shipments {
+  id               String          @id @default(uuid())
+  order_id         String          @unique
+  courier_name     String
+  tracking_number  String?         @unique
+  shipping_service ShippingService @default(REGULAR)
+  shipping_cost    Int
+  shipped_at       DateTime?
+  delivered_at     DateTime?
+
+  order Orders @relation(fields: [order_id], references: [id])
+}
+
+model Order_tracking_timelines {
+  id          String   @id @default(uuid())
+  order_id    String
+  step_order  Int      @default(1)
+  step_title  String   @default("order_placed")
+  description String?
+  event_time  DateTime @default(now())
+}
+
+model Product_reviews {
+  id              String    @id @default(uuid())
+  product_id      String
+  user_id         String
+  order_id        String?
+  rating          Int
+  comment         String
+  seller_reply    String?
+  seller_reply_at DateTime?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
+
+  product Products @relation(fields: [product_id], references: [id])
+  user    Users    @relation(fields: [user_id], references: [id])
+  order   Orders?  @relation(fields: [order_id], references: [id])
+}

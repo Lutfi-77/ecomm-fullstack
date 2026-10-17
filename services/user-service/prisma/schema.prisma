@@ -1,0 +1,65 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  BUYER
+  SELLER
+  ADMIN
+}
+
+model User {
+  id        String        @id @default(uuid())
+  email     String        @unique
+  password  String        @map("password")
+  fullName  String        @map("full_name")
+  phone     String?
+  avatarUrl String?       @map("avatar_url")
+  role      UserRole      @default(BUYER)
+  createdAt DateTime      @default(now()) @map("created_at")
+  updatedAt DateTime      @updatedAt @map("updated_at")
+  store     Store?
+  addresses UserAddress[]
+
+  @@map("users")
+}
+
+model UserAddress {
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
+  recipientName String   @map("recipient_name")
+  phone         String
+  streetAddress String   @map("street_address")
+  city          String
+  postalCode    String   @map("postal_code")
+  province      String?
+  isDefault     Boolean  @default(false) @map("is_default")
+  createdAt     DateTime @default(now()) @map("created_at")
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_addresses")
+}
+
+model Store {
+  id                String   @id @default(uuid())
+  userId            String   @unique @map("user_id")
+  name              String
+  slug              String   @unique
+  description       String?
+  logoUrl           String?  @map("logo_url")
+  bankName          String?  @map("bank_name")
+  bankAccountNumber String?  @map("bank_account_number")
+  bankAccountHolder String?  @map("bank_account_holder")
+  ratingCache       Decimal  @default(0.0) @map("rating_cache") @db.Decimal(3, 2)
+  createdAt         DateTime @default(now()) @map("created_at")
+  updatedAt         DateTime @updatedAt @map("updated_at")
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("stores")
+}
