@@ -22,9 +22,17 @@ export const authMiddleware = (
   const jwt = new Jwt();
   const data = jwt.verify(token);
 
-  if (data.role != 'SELLER') {
-    throw new UnauthorizedError('Unauthorized');
-  }
   req.user = data.id;
+  (req as any).userRole = data.role;
   next();
+};
+
+export const requireRole = (allowedRoles: string[]) => {
+  return (req: Request, res: Response, next: NextFunction) => {
+    const role = (req as any).userRole;
+    if (!role || !allowedRoles.includes(role)) {
+      throw new UnauthorizedError('Unauthorized: Insufficient permissions');
+    }
+    next();
+  };
 };

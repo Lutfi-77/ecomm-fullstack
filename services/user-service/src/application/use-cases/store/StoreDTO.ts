@@ -23,7 +23,7 @@ export const updateStoreSchema = z.object({
 });
 
 export type CreateStorerDTO = z.infer<typeof createStoreSchema>;
-export type UpdateStorerDTO = z.infer<typeof updateStoreSchema>;
+export type UpdateStoreDTO = z.infer<typeof updateStoreSchema>;
 
 export interface ResponseStoreDTO {
   name: string;

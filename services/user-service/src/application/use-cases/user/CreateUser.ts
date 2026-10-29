@@ -31,6 +31,7 @@ export class CreateUser {
       id: savedUser.id!,
       fullName: savedUser.fullName,
       email: savedUser.email,
+      role: savedUser.role,
     };
   }
 }

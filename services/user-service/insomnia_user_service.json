@@ -1,0 +1,542 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-10-17T11:25:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_user_service",
+      "_type": "workspace",
+      "parentId": null,
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "User Service API",
+      "description": "API collection for E-Commerce User Service",
+      "scope": "collection"
+    },
+    {
+      "_id": "env_base_user_service",
+      "_type": "environment",
+      "parentId": "wrk_user_service",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Base Environment",
+      "data": {
+        "baseUrl": "http://localhost:5001",
+        "base_url": "http://localhost:5001",
+        "buyer_token": "",
+        "seller_token": ""
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "baseUrl",
+          "base_url",
+          "buyer_token",
+          "seller_token"
+        ]
+      },
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 1700000000000
+    },
+    {
+      "_id": "env_dev_user_service",
+      "_type": "environment",
+      "parentId": "env_base_user_service",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Local Dev (5001)",
+      "data": {
+        "baseUrl": "http://localhost:5001",
+        "base_url": "http://localhost:5001"
+      },
+      "dataPropertyOrder": {
+        "&": [
+          "baseUrl",
+          "base_url"
+        ]
+      },
+      "color": "#7d69cb",
+      "isPrivate": false,
+      "metaSortKey": 1700000000000
+    },
+    {
+      "_id": "fld_health",
+      "_type": "request_group",
+      "parentId": "wrk_user_service",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Health Check",
+      "description": "Service health check",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 100
+    },
+    {
+      "_id": "req_health_check",
+      "_type": "request",
+      "parentId": "fld_health",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/health",
+      "name": "Check Health",
+      "description": "Check if user-service is alive and running",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "fld_user",
+      "_type": "request_group",
+      "parentId": "wrk_user_service",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "User (Buyer)",
+      "description": "Buyer Authentication endpoints",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 200
+    },
+    {
+      "_id": "req_user_register",
+      "_type": "request",
+      "parentId": "fld_user",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/user/register",
+      "name": "Register User",
+      "description": "Register a new buyer account",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"fullName\": \"Budi Santoso\",\n  \"email\": \"budi@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_user_login",
+      "_type": "request",
+      "parentId": "fld_user",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/user/login",
+      "name": "Login User",
+      "description": "Login buyer account to obtain JWT token",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"budi@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "fld_seller",
+      "_type": "request_group",
+      "parentId": "wrk_user_service",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Seller",
+      "description": "Seller registration, login, and profile management",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 300
+    },
+    {
+      "_id": "req_seller_register",
+      "_type": "request",
+      "parentId": "fld_seller",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/seller/register",
+      "name": "Register Seller",
+      "description": "Register a new seller account",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"fullName\": \"Siti Aminah\",\n  \"email\": \"seller@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_seller_login",
+      "_type": "request",
+      "parentId": "fld_seller",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/seller/login",
+      "name": "Login Seller",
+      "description": "Login seller account to obtain JWT token",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"email\": \"seller@example.com\",\n  \"password\": \"password123\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {},
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_seller_update",
+      "_type": "request",
+      "parentId": "fld_seller",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/seller",
+      "name": "Update Seller Profile",
+      "description": "Update seller profile details (Requires SELLER role token)",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"fullName\": \"Siti Aminah Updated\",\n  \"phone\": \"081234567890\",\n  \"avatarUrl\": \"https://images.unsplash.com/photo-1534528741775-53994a69daeb\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ seller_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": 300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "fld_store",
+      "_type": "request_group",
+      "parentId": "wrk_user_service",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Store",
+      "description": "Store management for sellers & public store discovery",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 400
+    },
+    {
+      "_id": "req_store_create",
+      "_type": "request",
+      "parentId": "fld_store",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/store/create",
+      "name": "Create Store",
+      "description": "Create store for logged-in seller",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Toko Berkah Sejahtera\",\n  \"slug\": \"toko-berkah-sejahtera\",\n  \"description\": \"Toko online terpercaya menyediakan berbagai kebutuhan\",\n  \"logoUrl\": \"https://example.com/logo.png\",\n  \"bankName\": \"BCA\",\n  \"bankAccountNumber\": \"8730123456\",\n  \"bankAccountHolder\": \"Siti Aminah\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ seller_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_store_get_my",
+      "_type": "request",
+      "parentId": "fld_store",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/store",
+      "name": "Get My Store",
+      "description": "Get current logged-in seller store information",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ seller_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_store_get_slug",
+      "_type": "request",
+      "parentId": "fld_store",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/store/toko-berkah-sejahtera",
+      "name": "Get Store by Slug",
+      "description": "Public route to fetch store details by slug",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {},
+      "metaSortKey": 300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_store_update",
+      "_type": "request",
+      "parentId": "fld_store",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/store/update",
+      "name": "Update Store",
+      "description": "Update store details for logged-in seller",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Toko Berkah Sejahtera Updated\",\n  \"description\": \"Deskripsi toko yang telah diperbarui\",\n  \"bankName\": \"Mandiri\",\n  \"bankAccountNumber\": \"1420012345678\",\n  \"bankAccountHolder\": \"Siti Aminah\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ seller_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": 400,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "fld_address",
+      "_type": "request_group",
+      "parentId": "wrk_user_service",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "name": "Address",
+      "description": "Manage shipping addresses (Requires Buyer or Seller token)",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 500
+    },
+    {
+      "_id": "req_address_get_all",
+      "_type": "request",
+      "parentId": "fld_address",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/address",
+      "name": "Get All Addresses",
+      "description": "Retrieve all addresses saved for authenticated user",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ buyer_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_address_create",
+      "_type": "request",
+      "parentId": "fld_address",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/address",
+      "name": "Create Address",
+      "description": "Add a new shipping address",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"recipientName\": \"Budi Santoso\",\n  \"phone\": \"081298765432\",\n  \"streetAddress\": \"Jl. Sudirman Kav. 52-53, SCBD\",\n  \"city\": \"Jakarta Selatan\",\n  \"province\": \"DKI Jakarta\",\n  \"postalCode\": \"12190\",\n  \"isDefault\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ buyer_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_address_set_default",
+      "_type": "request",
+      "parentId": "fld_address",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/address/YOUR_ADDRESS_ID/default",
+      "name": "Set Default Address",
+      "description": "Mark an address as the default address",
+      "method": "PATCH",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ buyer_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": 300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    },
+    {
+      "_id": "req_address_delete",
+      "_type": "request",
+      "parentId": "fld_address",
+      "modified": 1700000000000,
+      "created": 1700000000000,
+      "url": "{{ baseUrl }}/address/YOUR_ADDRESS_ID",
+      "name": "Delete Address",
+      "description": "Delete a shipping address by ID",
+      "method": "DELETE",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ buyer_token }}",
+        "prefix": "Bearer"
+      },
+      "metaSortKey": 400,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global"
+    }
+  ]
+}

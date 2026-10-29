@@ -20,6 +20,8 @@ export class PrismaUserRepository implements UserRepository {
       result.email,
       result.password,
       result.role,
+      result.phone ?? undefined,
+      result.avatarUrl ?? undefined,
       result.id,
     );
   }
@@ -36,6 +38,8 @@ export class PrismaUserRepository implements UserRepository {
       result.email,
       result.password,
       result.role,
+      result.phone ?? undefined,
+      result.avatarUrl ?? undefined,
       result.id,
     );
   }
@@ -52,6 +56,31 @@ export class PrismaUserRepository implements UserRepository {
       result.email,
       result.password,
       result.role,
+      result.phone ?? undefined,
+      result.avatarUrl ?? undefined,
+      result.id,
+    );
+  }
+
+  async update(user: User, id: string): Promise<User> {
+    const result = await this.prisma.user.update({
+      where: { id },
+      data: {
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        avatarUrl: user.avatarUrl,
+        password: user.password,
+      },
+    });
+
+    return new User(
+      result.fullName,
+      result.email,
+      result.password,
+      result.role,
+      result.phone ?? undefined,
+      result.avatarUrl ?? undefined,
       result.id,
     );
   }

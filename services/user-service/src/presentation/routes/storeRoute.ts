@@ -5,16 +5,22 @@ import {
   createStoreSchema,
   updateStoreSchema,
 } from '../../application/use-cases/store/StoreDTO';
-import { authMiddleware } from '../middlewares/auth';
+import { authMiddleware, requireRole } from '../middlewares/auth';
 
 const router = express.Router();
 
-router.get('/', authMiddleware, storeController.get.bind(storeController));
+router.get(
+  '/',
+  authMiddleware,
+  requireRole(['SELLER']),
+  storeController.get.bind(storeController),
+);
 router.get('/:slug', storeController.getBySlug.bind(storeController));
 
 router.post(
   '/create',
   authMiddleware,
+  requireRole(['SELLER']),
   validateRequest(createStoreSchema),
   storeController.create.bind(storeController),
 );
@@ -22,6 +28,7 @@ router.post(
 router.patch(
   '/update',
   authMiddleware,
+  requireRole(['SELLER']),
   validateRequest(updateStoreSchema),
   storeController.update.bind(storeController),
 );

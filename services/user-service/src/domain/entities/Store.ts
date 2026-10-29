@@ -72,4 +72,18 @@ export class Store {
     if (props.bankAccountHolder !== undefined)
       this.props.bankAccountHolder = props.bankAccountHolder;
   }
+
+  toResponse() {
+    return {
+      name: this.name,
+      slug: this.slug,
+      description: this.description,
+      logoUrl: this.logoUrl,
+      bankName: this.bankName,
+      bankAccountNumber: this.bankAccountNumber,
+      bankAccountHolder: this.bankAccountHolder,
+      ratingCache: this.ratingCache,
+      createdAt: this.createdAt,
+    };
+  }
 }

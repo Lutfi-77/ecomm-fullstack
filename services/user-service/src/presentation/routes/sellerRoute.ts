@@ -6,7 +6,7 @@ import {
   updateSellerSchema,
 } from '../../application/use-cases/seller/SellerDTO';
 import { validateRequest } from '../middlewares/validateRequest';
-import { authMiddleware } from '../middlewares/auth';
+import { authMiddleware, requireRole } from '../middlewares/auth';
 
 const router = Router();
 
@@ -25,6 +25,7 @@ router.post(
 router.patch(
   '/',
   authMiddleware,
+  requireRole(['SELLER']),
   validateRequest(updateSellerSchema),
   sellerController.update.bind(sellerController),
 );

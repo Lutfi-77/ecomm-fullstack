@@ -1,19 +1,24 @@
-import { StoreRepository } from '../../../domain/repositories/StoreRepository';
+import {
+  RedisRepository,
+  StoreRepository,
+} from '../../../domain/repositories/StoreRepository';
 import {
   ConflictError,
   NotFoundError,
   UnauthorizedError,
 } from '../../errors/DomainErrors';
-import { ResponseStoreDTO, UpdateStorerDTO } from './StoreDTO';
+import { ResponseStoreDTO, UpdateStoreDTO } from './StoreDTO';
 
 export class UpdateStore {
-  constructor(private readonly storeRepository: StoreRepository) {}
+  constructor(
+    private readonly storeRepository: StoreRepository,
+    private readonly redisService: RedisRepository,
+  ) {}
 
   async execute(
-    request: UpdateStorerDTO,
+    request: UpdateStoreDTO,
     sellerId: string,
   ): Promise<ResponseStoreDTO> {
-    console.log(sellerId);
     if (!sellerId) {
       throw new UnauthorizedError('Unauthorized');
     }
@@ -23,6 +28,9 @@ export class UpdateStore {
     if (!currentStore) {
       throw new NotFoundError('Store Not Found');
     }
+
+    // keep the old slug
+    const oldSlug = currentStore.slug;
 
     if (request.slug && request.slug !== currentStore.slug) {
       const slugExists = await this.storeRepository.findBySlug(request.slug);
@@ -46,16 +54,13 @@ export class UpdateStore {
       currentStore.idStore!,
     );
 
-    return {
-      name: updatedStore.name,
-      slug: updatedStore.slug,
-      description: updatedStore.description,
-      logoUrl: updatedStore.logoUrl,
-      bankName: updatedStore.bankName,
-      bankAccountNumber: updatedStore.bankAccountNumber,
-      bankAccountHolder: updatedStore.bankAccountHolder,
-      ratingCache: updatedStore.ratingCache,
-      createdAt: updatedStore.createdAt,
-    };
+    await this.redisService.del(`store:${oldSlug}`);
+
+    // Check if seller change the slug and redis will remove it
+    if (request.slug && request.slug !== oldSlug) {
+      await this.redisService.del(`store:${request.slug}`);
+    }
+
+    return updatedStore.toResponse();
   }
 }
